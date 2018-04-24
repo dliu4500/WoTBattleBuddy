@@ -1,11 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html ng-app='wotApp'>
 <head>
-	<title>Page Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/customStyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="dist/Chart.bundle.js"></script>
+    <script src="dist/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="app.js" ></script>
 </head>
-<body>
 
+<body ng-controller="wotAppController">
 
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid" style="padding-left: 0px">
+                <div class="navbar-header">
+                    <img class="icon" src="images/icon.svg" style="padding: 5px">
+                </div>
+            </div>
+        </nav>
 
+    <div class="content">
+        <div class="searchFormOuter">
+            <div class="searchFormMiddle">
+                <div class="searchFormInner">
+                    <h2 class="searchHeader">Search Player</h2>
+                    <form ng-submit="searchPlayer()">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="playerName" placeholder="Enter Player Name">
+                            <div class="input-group-btn">
+                                <button type="submit" value="Search" class="btn btn-primary searchButton">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <label class="radio inline"><input type="radio" ng-model="reigon" name="reigonSelect" value="com"><span>North America</span></label>
+                        <label class="radio inline"><input type="radio" ng-model="reigon" name="reigonSelect" value="eu"><span>Europe</span></label>
+                        <label class="radio inline"><input type="radio" ng-model="reigon" name="reigonSelect" value="ru"><span>Russia</span></label>
+                        <label class="radio inline"><input type="radio" ng-model="reigon" name="reigonSelect" value="asia"><span>Asia</span></label>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="resultsDisplay">
+            <hr>
+            <div id="statusMessage">
+                <h3>{{statusMessage}}</h3>
+            </div>
+            <div id="showResults" style="display:none">
+                <h2 class="playerNameHeader">{{playerNameReturned}}</h2>
+                <h4 class="playerReigonHeader">Reigon: {{playerReigon}}</h4>
+                <h4 id="warningMessage" style="display: none">Warning: Multiple players found, showing results for first player</h4>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                            <h3>Account Statisitics</h3>
+                            <table id="playerStatsTable">
+                                <tr>
+                                <th></th>
+                                <th>Total</th>
+                                </tr>
+                                <tr>
+                                    <td>Battles</td>
+                                    <td>{{battles}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Win Percentage</td>
+                                    <td>{{winPercentage}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Loss Percentage</td>
+                                    <td>{{lossPercentage}}</td>
+                                </tr>   
+                                <tr>
+                                    <td>Draw Percentage</td>
+                                    <td>{{drawPercentage}}</td>
+                                </tr>  
+                                <tr>
+                                    <td>Average Exp</td>
+                                    <td>{{avgExp}}</td>
+                                </tr>               
+                            </table>
+                            <br>
+                            <h3>Battle Statistics</h3>
+                            <table id="playerStatsTable">
+                            <tr>
+                                <th></th>
+                                <th>Total</th>
+                                </tr>
+                                <tr>
+                                    <td>Destroyed</td>
+                                    <td>{{destroyed}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kill-Death Ratio</td>
+                                    <td>{{kdRatio}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Damage</td>
+                                    <td>{{avgDamage}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Damage Ratio</td>
+                                    <td>{{dmgRatio}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Spotted</td>
+                                    <td>{{spotted}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Spotting Damage</td>
+                                    <td>{{spottingDmg}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Assisstance Damage</td>
+                                    <td>{{assistanceDmg}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Stun Assisstance</td>
+                                    <td>{{stunAssistance}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Capture Points</td>
+                                    <td>{{capPoints}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Defence Points</td>
+                                    <td>{{defPoints}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                            <h3>Offensive Rating</h3>
+                            <canvas id="offensiveGraph" class="graph" width="400px" height="250px"></canvas>
+                            <h3>Defensive Rating</h3>
+                            <canvas id="defensiveGraph" class="graph" width="400px" height="250px"></canvas>
+                            <h3>Utility Rating</h3>
+                            <canvas id="utilityGraph" class="graph" width="400px" height="250px"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div> 
+    <br>         
 </body>
 </html>
